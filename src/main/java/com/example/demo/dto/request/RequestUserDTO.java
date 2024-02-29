@@ -11,9 +11,9 @@ import lombok.RequiredArgsConstructor;
 @AllArgsConstructor
 public class RequestUserDTO implements SuperDTO {
 
-    @NonNull
     private String username;
 
-    @NonNull
     private String password;
+
+
 }
