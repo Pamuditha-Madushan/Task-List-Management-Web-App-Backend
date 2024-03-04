@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.validation.Valid;
 import java.io.IOException;
 
 @RestController
@@ -26,8 +27,8 @@ public class UserController {
     }
 
     @PostMapping(path = {"/register"})
-    public ResponseEntity<StandardResponse> registerUser (
-            @RequestBody RequestUserDTO requestUserDTO) throws IOException {
+    public ResponseEntity<StandardResponse> registerUser(
+            @Valid @RequestBody RequestUserDTO requestUserDTO) throws IOException {
         try {
             CommonResponseDTO registeredStateData = userService.registerUser(requestUserDTO);
 

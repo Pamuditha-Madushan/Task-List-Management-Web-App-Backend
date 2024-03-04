@@ -11,8 +11,7 @@ import javax.validation.constraints.Size;
 @Data
 @RequiredArgsConstructor
 @AllArgsConstructor
-public class RequestUserDTO implements SuperDTO {
-
+public class LoginUserDTO implements SuperDTO {
 
     @NotBlank(message = "Username cannot be empty !")
     @Size(min = 6, max = 30, message = "Username must be between 6 to 30 characters !")
@@ -21,6 +20,5 @@ public class RequestUserDTO implements SuperDTO {
     @NotBlank(message = "Password cannot be empty !")
     @Size(min = 6, message = "Password must be at least 6 characters long !")
     private String password;
-
 
 }
