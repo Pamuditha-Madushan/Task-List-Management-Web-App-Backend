@@ -1,10 +1,10 @@
 package com.example.demo.jwt;
 
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
-import io.jsonwebtoken.security.Keys;
+
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Component;
+
 
 @Component
 @ConfigurationProperties(prefix = "application.jwt")
@@ -41,19 +41,9 @@ public class JwtConfig {
         this.tokenExpirationAfterDays = tokenExpirationAfterDays;
     }
 
-    /*
-    private String generateToken(String username) {
-        String token = Jwts.builder()
-                .setSubject(username)
-                .claim("authorities", "ROLE_USER")
-                .setIssuedAt(System.currentTimeMillis())
-                .setExpiration(System.currentTimeMillis() + tokenExpirationAfterDays * 24 * 60 * 60 * 1000)
-                .signWith(Keys.secretKeyFor(SignatureAlgorithm.ES256), secretKey)
-                .compact();
-        return token;
+    public String getAuthorizationHeader() {
+        return HttpHeaders.AUTHORIZATION;
     }
-
-     */
 
 
 }

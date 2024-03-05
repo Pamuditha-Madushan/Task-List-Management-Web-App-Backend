@@ -2,7 +2,7 @@ package com.example.demo.api;
 
 import com.example.demo.dto.request.RequestUserDTO;
 import com.example.demo.dto.response.core.CommonResponseDTO;
-import com.example.demo.exception.InternalServerErrorException;
+import com.example.demo.exception.SQLIntegrityConstraintViolationException;
 import com.example.demo.service.process.UserService;
 import com.example.demo.util.StandardResponse;
 import org.springframework.http.HttpStatus;
@@ -34,8 +34,8 @@ public class UserController {
 
             return new ResponseEntity(new StandardResponse(registeredStateData.getCode(),
                     registeredStateData.getMessage(), registeredStateData.getData()),
-                    registeredStateData.getCode() == 201 ? HttpStatus.CREATED : HttpStatus.INTERNAL_SERVER_ERROR);
-        } catch (InternalServerErrorException e) {
+                    registeredStateData.getCode() == 201 ? HttpStatus.CREATED : HttpStatus.BAD_REQUEST);
+        } catch (SQLIntegrityConstraintViolationException e) {
             throw e;
         }
     }

@@ -5,7 +5,7 @@ import com.example.demo.dto.request.LoginUserDTO;
 import com.example.demo.dto.request.RequestUserDTO;
 import com.example.demo.dto.response.core.CommonResponseDTO;
 import com.example.demo.entity.User;
-import com.example.demo.exception.InternalServerErrorException;
+import com.example.demo.exception.SQLIntegrityConstraintViolationException;
 import com.example.demo.repo.UserRepo;
 import com.example.demo.service.process.UserService;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -31,7 +31,7 @@ public class UserServiceImpl implements UserService {
     public CommonResponseDTO registerUser(RequestUserDTO requestUserDTO) throws IOException {
         User existingUser = userRepo.findByUsername(requestUserDTO.getUsername());
         if (existingUser != null) {
-            throw new InternalServerErrorException("Username exists already !");
+            throw new SQLIntegrityConstraintViolationException("Username exists already !");
         }
 
         User newUser = new User();
