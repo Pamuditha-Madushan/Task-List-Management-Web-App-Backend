@@ -7,6 +7,7 @@
 
      - Implemented User Registration Functionality.
      - Registration data will be stored in memory with h2 database.
-     - Updated the code for validation to return appropriate response.
+     - Updated the code for validation to return appropriate error response.
      - Start Implementing User Login Functionality with JWT.
+     - Implement Jwt related code for Jwt authentication.
      
