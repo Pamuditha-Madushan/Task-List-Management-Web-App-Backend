@@ -31,7 +31,7 @@ public class UserServiceImpl implements UserService {
     public CommonResponseDTO registerUser(RequestUserDTO requestUserDTO) throws IOException {
         User existingUser = userRepo.findByUsername(requestUserDTO.getUsername());
         if (existingUser != null) {
-            throw new SQLIntegrityConstraintViolationException("Username exists already !");
+            throw new SQLIntegrityConstraintViolationException("Username " +requestUserDTO.getUsername() + " exists already !");
         }
 
         User newUser = new User();
@@ -40,12 +40,12 @@ public class UserServiceImpl implements UserService {
 
         User savedUser = userRepo.save(newUser);
 
-        return new CommonResponseDTO(200, "User registered successfully ...", savedUser, null);
+        return new CommonResponseDTO(200, "User " +requestUserDTO.getUsername()+ " registered successfully ...", savedUser, null);
     }
 
     @Override
     public CommonResponseDTO loginUser(LoginUserDTO loginUserDTO) throws IOException {
 
-        return new CommonResponseDTO(200, "User registered successfully ...", null, null);
+        return new CommonResponseDTO(200, "User " +loginUserDTO.getUsername()+ " logged in successfully ...", null, null);
     }
 }
