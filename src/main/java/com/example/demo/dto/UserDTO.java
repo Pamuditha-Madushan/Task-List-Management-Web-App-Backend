@@ -13,4 +13,12 @@ public class UserDTO implements SuperDTO{
     private String username;
 
     private String password;
+
+    private boolean isAccountNonExpired;
+
+    private boolean isAccountNonLocked;
+
+    private boolean isCredentialsNonExpired;
+
+    private boolean isEnabled;
 }
