@@ -9,6 +9,8 @@
      - Registration data will be stored in memory with h2 database.
      - Updated the code for validation to return appropriate error response.
      - Start Implementing User Login Functionality with JWT.
-     - Implement Jwt related code for Jwt authentication.
+     - Implemented Jwt related code for Jwt authentication.
+     - Complete implementing Jwt authentication and spring security functionalities.
+     - Login Functionality Implementation Done Successfully.
    
      
