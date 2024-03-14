@@ -13,5 +13,5 @@
      - Complete implementing Jwt authentication and spring security functionalities.
      - Login Functionality Implementation Done Successfully.
      - Figuring out the JWT token generation part when login authentication is successful.
-   
+     - Added some new code updates.
      
