@@ -1,12 +1,13 @@
 package com.example.demo.jwt;
 
-import io.jsonwebtoken.SignatureAlgorithm;
+
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import javax.crypto.SecretKey;
+
 
 @Configuration
 public class JwtSecretKey {
@@ -21,7 +22,8 @@ public class JwtSecretKey {
 
     @Bean
     public SecretKey secretKey() {
-        return Keys.secretKeyFor(SignatureAlgorithm.HS256);
+        return Keys.hmacShaKeyFor(jwtConfig.getSecretKey()
+                .getBytes());
     }
 
 

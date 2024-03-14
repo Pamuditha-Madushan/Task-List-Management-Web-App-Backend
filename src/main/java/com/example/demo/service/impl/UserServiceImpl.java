@@ -31,13 +31,13 @@ public class UserServiceImpl implements UserService {
     private final PasswordEncoder passwordEncoder;
     private final ApplicationUserServiceImpl applicationUserService;
 
-    //private final AuthenticationManager authenticationManager;
+   // private final AuthenticationManager authenticationManager;
 
     public UserServiceImpl(UserRepo userRepo, PasswordEncoder passwordEncoder, ApplicationUserServiceImpl applicationUserService) {
         this.userRepo = userRepo;
         this.passwordEncoder = passwordEncoder;
         this.applicationUserService = applicationUserService;
-
+        //this.authenticationManager = authenticationManager;
     }
 
     @Override
@@ -53,7 +53,7 @@ public class UserServiceImpl implements UserService {
 
         User savedUser = userRepo.save(newUser);
 
-        return new CommonResponseDTO(200, "User " +requestUserDTO.getUsername()+ " registered successfully ...", savedUser, null);
+        return new CommonResponseDTO(201, "User " +requestUserDTO.getUsername()+ " registered successfully ...", savedUser, null);
     }
 
     @Override
@@ -68,8 +68,7 @@ public class UserServiceImpl implements UserService {
 
 
 
-        // User user = (User) userDetails;
-        // String token = UsernamePasswordAuthenticationFilter.
+
 
         return new CommonResponseDTO(200, "User " +loginUserDTO.getUsername()+ " logged in successfully ...", loginUser, null);
     }

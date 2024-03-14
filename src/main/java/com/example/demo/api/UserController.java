@@ -50,7 +50,7 @@ public class UserController {
             CommonResponseDTO loggedInStateData = userService.loginUser(loginUserDTO);
             return new ResponseEntity(new StandardResponse(loggedInStateData.getCode(),
                     loggedInStateData.getMessage(), loggedInStateData.getData()),
-                    loggedInStateData.getCode() == 201 ? HttpStatus.OK : HttpStatus.INTERNAL_SERVER_ERROR);
+                    loggedInStateData.getCode() == 200 ? HttpStatus.OK : HttpStatus.INTERNAL_SERVER_ERROR);
         } catch (UnAuthorizedException e) {
             throw e;
         } catch (UsernameNotFoundException ex) {

@@ -1,6 +1,7 @@
 package com.example.demo.jwt;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -55,6 +56,7 @@ public class JwtUsernameAndPasswordAuthenticationFilter extends UsernamePassword
     protected void successfulAuthentication(HttpServletRequest request,
                                             HttpServletResponse response, FilterChain chain,
                                             Authentication authResult) throws IOException, ServletException {
+
         String token = Jwts.builder()
                 .setSubject(authResult.getName())
                 .claim("authorities", authResult.getAuthorities())
@@ -63,6 +65,7 @@ public class JwtUsernameAndPasswordAuthenticationFilter extends UsernamePassword
                         .plusDays(jwtConfig.getTokenExpirationAfterDays())))
                 .signWith(secretKey)
                 .compact();
+
         response.addHeader(jwtConfig.getAuthorizationHeader(),
                 jwtConfig.getTokenPrefix() + token);
     }
