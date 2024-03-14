@@ -12,5 +12,5 @@
      - Implemented Jwt related code for Jwt authentication.
      - Complete implementing Jwt authentication and spring security functionalities.
      - Login Functionality Implementation Done Successfully.
-   
+     - Added some new code updates.
      
