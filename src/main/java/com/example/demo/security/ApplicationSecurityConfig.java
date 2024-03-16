@@ -4,6 +4,7 @@ import com.example.demo.jwt.JwtConfig;
 import com.example.demo.jwt.JwtTokenVerifier;
 import com.example.demo.jwt.JwtUsernameAndPasswordAuthenticationFilter;
 import com.example.demo.service.impl.ApplicationUserServiceImpl;
+import com.example.demo.service.impl.UserServiceImpl;
 import com.example.demo.service.process.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -35,18 +36,23 @@ public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final SecretKey secretKey;
 
+    private final UserServiceImpl userServiceImpl;
+
+
     @Autowired
     public ApplicationSecurityConfig(
             PasswordEncoder passwordEncoder,
             ApplicationUserServiceImpl applicationUserService,
             UserService userService,
             JwtConfig jwtConfig,
-            SecretKey secretKey) {
+            SecretKey secretKey,
+            UserServiceImpl userServiceImpl) {
         this.passwordEncoder = passwordEncoder;
         this.applicationUserService = applicationUserService;
         this.userService = userService;
         this.jwtConfig = jwtConfig;
         this.secretKey = secretKey;
+        this.userServiceImpl = userServiceImpl;
     }
 
 
@@ -71,7 +77,7 @@ public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .addFilter
                         (new JwtUsernameAndPasswordAuthenticationFilter
-                                (authenticationManager(), jwtConfig, secretKey)
+                                (authenticationManager(), jwtConfig, userServiceImpl)
                         )
                 .addFilterAfter(new JwtTokenVerifier(jwtConfig, secretKey),
                         JwtUsernameAndPasswordAuthenticationFilter.class)

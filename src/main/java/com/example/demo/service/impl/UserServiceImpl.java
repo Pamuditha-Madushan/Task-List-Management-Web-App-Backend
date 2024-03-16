@@ -7,6 +7,8 @@ import com.example.demo.dto.response.core.CommonResponseDTO;
 import com.example.demo.entity.User;
 import com.example.demo.exception.SQLIntegrityConstraintViolationException;
 import com.example.demo.exception.UnAuthorizedException;
+import com.example.demo.jwt.JwtConfig;
+import com.example.demo.jwt.JwtTokenUtil;
 import com.example.demo.repo.UserRepo;
 import com.example.demo.service.process.UserService;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -20,6 +22,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 @Service
@@ -31,13 +34,15 @@ public class UserServiceImpl implements UserService {
     private final PasswordEncoder passwordEncoder;
     private final ApplicationUserServiceImpl applicationUserService;
 
-   // private final AuthenticationManager authenticationManager;
+    private final JwtConfig jwtConfig;
+   private final JwtTokenUtil jwtTokenUtil;
 
-    public UserServiceImpl(UserRepo userRepo, PasswordEncoder passwordEncoder, ApplicationUserServiceImpl applicationUserService) {
+    public UserServiceImpl(UserRepo userRepo, PasswordEncoder passwordEncoder, ApplicationUserServiceImpl applicationUserService, JwtConfig jwtConfig, JwtTokenUtil jwtTokenUtil) {
         this.userRepo = userRepo;
         this.passwordEncoder = passwordEncoder;
         this.applicationUserService = applicationUserService;
-        //this.authenticationManager = authenticationManager;
+        this.jwtConfig = jwtConfig;
+        this.jwtTokenUtil = jwtTokenUtil;
     }
 
     @Override
@@ -57,7 +62,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public CommonResponseDTO loginUser(LoginUserDTO loginUserDTO) throws IOException {
+    public CommonResponseDTO loginUser(LoginUserDTO loginUserDTO, HttpServletResponse response) throws IOException {
         User loginUser = userRepo.findByUsername(loginUserDTO.getUsername());
         if (loginUser == null) {
             throw new UsernameNotFoundException("Username " +loginUserDTO.getUsername() + " not found !");
@@ -66,10 +71,15 @@ public class UserServiceImpl implements UserService {
             throw new UnAuthorizedException("Invalid Username or Password !");
         }
 
+        String accessToken = jwtTokenUtil.generateToken(loginUser.getUsername());
+
+        response.addHeader(jwtConfig.getAuthorizationHeader(), jwtConfig.getTokenPrefix() + " " + accessToken);
 
 
 
-
-        return new CommonResponseDTO(200, "User " +loginUserDTO.getUsername()+ " logged in successfully ...", loginUser, null);
+        return new CommonResponseDTO(200,
+                "User " +loginUserDTO.getUsername()+ " logged in successfully ...",
+                accessToken,
+                null);
     }
 }

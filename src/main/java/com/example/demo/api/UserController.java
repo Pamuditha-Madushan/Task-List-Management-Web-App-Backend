@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.io.IOException;
 
@@ -45,9 +46,9 @@ public class UserController {
 
     @PostMapping(path = {"/login"})
     public ResponseEntity<StandardResponse> loginUser(
-            @Valid @RequestBody LoginUserDTO loginUserDTO) throws IOException {
+            @Valid @RequestBody LoginUserDTO loginUserDTO, HttpServletResponse response) throws IOException {
         try {
-            CommonResponseDTO loggedInStateData = userService.loginUser(loginUserDTO);
+            CommonResponseDTO loggedInStateData = userService.loginUser(loginUserDTO, response);
             return new ResponseEntity(new StandardResponse(loggedInStateData.getCode(),
                     loggedInStateData.getMessage(), loggedInStateData.getData()),
                     loggedInStateData.getCode() == 200 ? HttpStatus.OK : HttpStatus.INTERNAL_SERVER_ERROR);
