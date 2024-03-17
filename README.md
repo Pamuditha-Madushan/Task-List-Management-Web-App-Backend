@@ -8,6 +8,9 @@
      - Implemented User Registration Functionality.
      - Registration data will be stored in memory with h2 database.
      - Updated the code for validation to return appropriate error response.
+     - More modularization added to registration api
+     - Use mapstruct for better use.
+   
 
    b). Login API with JWT Auth
    
@@ -18,3 +21,11 @@
      - Modified the code to return jwt token when user authentication is successful.
      - Added response header also to return jwt token.
      
+
+
+
+ 2). Task List API
+
+      - Start Implementation of this.
+
+      
