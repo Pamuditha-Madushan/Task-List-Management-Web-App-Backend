@@ -33,15 +33,12 @@ public class UserController {
     @PostMapping(path = {"/register"})
     public ResponseEntity<StandardResponse> registerUser(
             @Valid @RequestBody RequestUserDTO requestUserDTO) throws IOException {
-        try {
             CommonResponseDTO registeredStateData = userService.registerUser(requestUserDTO);
 
             return new ResponseEntity(new StandardResponse(registeredStateData.getCode(),
                     registeredStateData.getMessage(), registeredStateData.getData()),
-                    registeredStateData.getCode() == 201 ? HttpStatus.CREATED : HttpStatus.BAD_REQUEST);
-        } catch (SQLIntegrityConstraintViolationException e) {
-            throw e;
-        }
+                    registeredStateData.getCode() == 201 ? HttpStatus.CREATED :
+                            registeredStateData.getCode() == 409 ? HttpStatus.CONFLICT : HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     @PostMapping(path = {"/login"})

@@ -1,6 +1,7 @@
 package com.example.demo.service.impl;
 
 
+import com.example.demo.dto.UserDTO;
 import com.example.demo.dto.request.LoginUserDTO;
 import com.example.demo.dto.request.RequestUserDTO;
 import com.example.demo.dto.response.core.CommonResponseDTO;
@@ -11,12 +12,7 @@ import com.example.demo.jwt.JwtConfig;
 import com.example.demo.jwt.JwtTokenUtil;
 import com.example.demo.repo.UserRepo;
 import com.example.demo.service.process.UserService;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
+import com.example.demo.util.mapper.UserMapper;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -24,6 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.ArrayList;
 
 @Service
 @Transactional
@@ -34,13 +31,15 @@ public class UserServiceImpl implements UserService {
     private final PasswordEncoder passwordEncoder;
     private final ApplicationUserServiceImpl applicationUserService;
 
+    private final UserMapper userMapper;
     private final JwtConfig jwtConfig;
    private final JwtTokenUtil jwtTokenUtil;
 
-    public UserServiceImpl(UserRepo userRepo, PasswordEncoder passwordEncoder, ApplicationUserServiceImpl applicationUserService, JwtConfig jwtConfig, JwtTokenUtil jwtTokenUtil) {
+    public UserServiceImpl(UserRepo userRepo, PasswordEncoder passwordEncoder, ApplicationUserServiceImpl applicationUserService, UserMapper userMapper, JwtConfig jwtConfig, JwtTokenUtil jwtTokenUtil) {
         this.userRepo = userRepo;
         this.passwordEncoder = passwordEncoder;
         this.applicationUserService = applicationUserService;
+        this.userMapper = userMapper;
         this.jwtConfig = jwtConfig;
         this.jwtTokenUtil = jwtTokenUtil;
     }
@@ -48,17 +47,27 @@ public class UserServiceImpl implements UserService {
     @Override
     public CommonResponseDTO registerUser(RequestUserDTO requestUserDTO) throws IOException {
         User existingUser = userRepo.findByUsername(requestUserDTO.getUsername());
-        if (existingUser != null) {
-            throw new SQLIntegrityConstraintViolationException("Username " +requestUserDTO.getUsername() + " exists already !");
+        if (existingUser == null) {
+
+            UserDTO userDTO = new UserDTO(
+                    requestUserDTO.getUsername(),
+                    passwordEncoder.encode(requestUserDTO.getPassword()),
+                    true,
+                    true,
+                    true,
+                    false
+
+
+            );
+
+            userRepo.save(userMapper.toUser(userDTO));
+
+            return new CommonResponseDTO(201, "User " +requestUserDTO.getUsername()+ " registered successfully ...", requestUserDTO.getUsername(), new ArrayList<>());
+
+        } else {
+                return new CommonResponseDTO(409, requestUserDTO.getUsername() + " exists already !", "ALREADY_EXISTS", new ArrayList<>());
         }
 
-        User newUser = new User();
-        newUser.setUsername(requestUserDTO.getUsername());
-        newUser.setPassword(passwordEncoder.encode(requestUserDTO.getPassword()));
-
-        User savedUser = userRepo.save(newUser);
-
-        return new CommonResponseDTO(201, "User " +requestUserDTO.getUsername()+ " registered successfully ...", savedUser, null);
     }
 
     @Override
