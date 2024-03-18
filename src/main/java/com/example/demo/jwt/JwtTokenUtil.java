@@ -25,7 +25,6 @@ public class JwtTokenUtil {
 
         String token = Jwts.builder()
                 .setSubject(username)
-                .claim("authorities", Collections.emptyList())
                 .setIssuedAt(new Date())
                 .setExpiration(java.sql.Date.valueOf(LocalDate.now()
                         .plusDays(jwtConfig.getTokenExpirationAfterDays())))

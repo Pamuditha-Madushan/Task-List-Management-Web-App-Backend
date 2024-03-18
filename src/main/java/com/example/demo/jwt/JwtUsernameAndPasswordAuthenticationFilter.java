@@ -2,6 +2,7 @@ package com.example.demo.jwt;
 
 import com.example.demo.service.impl.UserServiceImpl;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.jsonwebtoken.Jwts;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -15,6 +16,8 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.time.LocalDate;
+import java.util.Date;
 
 
 public class JwtUsernameAndPasswordAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
@@ -25,11 +28,13 @@ public class JwtUsernameAndPasswordAuthenticationFilter extends UsernamePassword
 
     private final UserServiceImpl userService;
 
-    public JwtUsernameAndPasswordAuthenticationFilter(AuthenticationManager authenticationManager,
-                                                      JwtConfig jwtConfig, UserServiceImpl userService) {
+    private final SecretKey secretKey;
+
+    public JwtUsernameAndPasswordAuthenticationFilter(AuthenticationManager authenticationManager, JwtConfig jwtConfig, UserServiceImpl userService, SecretKey secretKey) {
         this.authenticationManager = authenticationManager;
         this.jwtConfig = jwtConfig;
         this.userService = userService;
+        this.secretKey = secretKey;
     }
 
     @Override
@@ -58,13 +63,11 @@ public class JwtUsernameAndPasswordAuthenticationFilter extends UsernamePassword
 
         //  UserDetails userDetails = (UserDetails) authResult.getPrincipal();
 
-        chain.doFilter(request, response);
+        //chain.doFilter(request, response);
 
-        /*
-        try {
+       // try {
             String token = Jwts.builder()
                     .setSubject(authResult.getName())
-                    .claim("authorities", authResult.getAuthorities())
                     .setIssuedAt(new Date())
                     .setExpiration(java.sql.Date.valueOf(LocalDate.now()
                             .plusDays(jwtConfig.getTokenExpirationAfterDays())))
@@ -73,6 +76,7 @@ public class JwtUsernameAndPasswordAuthenticationFilter extends UsernamePassword
 
             response.addHeader(jwtConfig.getAuthorizationHeader(),
                     jwtConfig.getTokenPrefix() + token);
+            /*
         } catch (JwtException e) {
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             response.getWriter().write("Error generating JWT token: " + e.getMessage());

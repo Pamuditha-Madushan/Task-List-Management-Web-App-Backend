@@ -62,7 +62,7 @@ public class UserServiceImpl implements UserService {
 
             userRepo.save(userMapper.toUser(userDTO));
 
-            return new CommonResponseDTO(201, "User " +requestUserDTO.getUsername()+ " registered successfully ...", requestUserDTO.getUsername(), new ArrayList<>());
+            return new CommonResponseDTO(201,  requestUserDTO.getUsername() + " registered successfully ...", requestUserDTO.getUsername(), new ArrayList<>());
 
         } else {
                 return new CommonResponseDTO(409, requestUserDTO.getUsername() + " exists already !", "ALREADY_EXISTS", new ArrayList<>());
