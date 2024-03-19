@@ -2,18 +2,21 @@ package com.example.demo.service.impl;
 
 import com.example.demo.dto.TaskDTO;
 import com.example.demo.dto.request.RequestTaskDTO;
+import com.example.demo.dto.response.ResponseTaskDTO;
 import com.example.demo.dto.response.core.CommonResponseDTO;
+import com.example.demo.dto.response.paginate.PaginatedResponseTaskDTO;
 import com.example.demo.entity.Task;
-import com.example.demo.jwt.JwtTokenVerifier;
 import com.example.demo.repo.TaskRepo;
-import com.example.demo.service.process.TaskService;
+import com.example.demo.service.TaskService;
 import com.example.demo.util.mapper.TaskMapper;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -32,8 +35,6 @@ public class TaskServiceImpl implements TaskService {
 
     @Override
     public CommonResponseDTO createTask(RequestTaskDTO requestTaskDTO) throws IOException {
-
-        //if (!jwtTokenVerifier)
 
 
         String title = requestTaskDTO.getTitle();
@@ -58,7 +59,25 @@ public class TaskServiceImpl implements TaskService {
 
         Task savedTask = taskRepo.save(taskMapper.toTask(taskDTO));
 
+        //taskDTO.setId(savedTask.getId());
+
         return new CommonResponseDTO(201, "Task created successfully", savedTask, new ArrayList<>());
 
+    }
+
+
+    @Override
+    public PaginatedResponseTaskDTO getTasks(int page, int size) {
+        List<Task> allWithPagination = taskRepo.findAllTasksWithPagination(PageRequest.of(page, size));
+        long taskCount = taskRepo.countAllTasks();
+        ArrayList<ResponseTaskDTO> responseTaskDTOS = new ArrayList<>();
+        for (Task task : allWithPagination) {
+            responseTaskDTOS.add(new ResponseTaskDTO(task.getId(), task.getTitle(),task.getDescription(), task.getStatus(), task.getTimestamp()));
+        }
+
+        return new PaginatedResponseTaskDTO(
+                taskCount,
+                responseTaskDTOS
+        );
     }
 }

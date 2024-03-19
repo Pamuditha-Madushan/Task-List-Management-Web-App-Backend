@@ -4,8 +4,7 @@ import com.example.demo.jwt.JwtConfig;
 import com.example.demo.jwt.JwtTokenVerifier;
 import com.example.demo.jwt.JwtUsernameAndPasswordAuthenticationFilter;
 import com.example.demo.service.impl.ApplicationUserServiceImpl;
-import com.example.demo.service.impl.UserServiceImpl;
-import com.example.demo.service.process.UserService;
+import com.example.demo.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -36,7 +35,6 @@ public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final SecretKey secretKey;
 
-    private final UserServiceImpl userServiceImpl;
 
 
     @Autowired
@@ -45,14 +43,12 @@ public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
             ApplicationUserServiceImpl applicationUserService,
             UserService userService,
             JwtConfig jwtConfig,
-            SecretKey secretKey,
-            UserServiceImpl userServiceImpl) {
+            SecretKey secretKey) {
         this.passwordEncoder = passwordEncoder;
         this.applicationUserService = applicationUserService;
         this.userService = userService;
         this.jwtConfig = jwtConfig;
         this.secretKey = secretKey;
-        this.userServiceImpl = userServiceImpl;
     }
 
 
@@ -77,14 +73,15 @@ public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .addFilter
                         (new JwtUsernameAndPasswordAuthenticationFilter
-                                (authenticationManager(), jwtConfig, userServiceImpl, secretKey)
+                                (authenticationManager(), jwtConfig, secretKey)
                         )
                 .addFilterAfter(new JwtTokenVerifier(jwtConfig, secretKey),
                         JwtUsernameAndPasswordAuthenticationFilter.class)
                 .authorizeRequests()
                 .antMatchers(
                         "/api/v1/user/register/**",
-                        "/api/v1/user/login/**"
+                        "/api/v1/user/login/**" //,
+                        //"/api/v1/tasks/create"
 
                 )
                 .permitAll()
@@ -96,7 +93,7 @@ public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-       auth.authenticationProvider(daoAuthenticationProvider());
+        auth.authenticationProvider(daoAuthenticationProvider());
     }
 
     @Bean
@@ -106,8 +103,6 @@ public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
         provider.setUserDetailsService(applicationUserService);
         return provider;
     }
-
-
 
 
 }

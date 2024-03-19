@@ -1,5 +1,6 @@
-package com.example.demo.dto;
+package com.example.demo.dto.response;
 
+import com.example.demo.dto.SuperDTO;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
@@ -9,8 +10,9 @@ import java.time.LocalDateTime;
 @Data
 @RequiredArgsConstructor
 @AllArgsConstructor
-public class TaskDTO implements SuperDTO {
+public class ResponseTaskDTO implements SuperDTO {
 
+    private Long id;
 
     private String title;
 
@@ -19,8 +21,6 @@ public class TaskDTO implements SuperDTO {
     private String status;
 
     private LocalDateTime timestamp;
-
-
 
 
 }

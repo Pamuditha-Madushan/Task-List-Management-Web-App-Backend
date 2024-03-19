@@ -4,7 +4,7 @@ import com.example.demo.dto.request.LoginUserDTO;
 import com.example.demo.dto.request.RequestUserDTO;
 import com.example.demo.dto.response.core.CommonResponseDTO;
 import com.example.demo.exception.UnAuthorizedException;
-import com.example.demo.service.process.UserService;
+import com.example.demo.service.UserService;
 import com.example.demo.util.StandardResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

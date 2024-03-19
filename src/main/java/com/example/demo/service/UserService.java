@@ -1,4 +1,4 @@
-package com.example.demo.service.process;
+package com.example.demo.service;
 
 import com.example.demo.dto.request.LoginUserDTO;
 import com.example.demo.dto.request.RequestUserDTO;

@@ -6,12 +6,11 @@ import com.example.demo.dto.request.LoginUserDTO;
 import com.example.demo.dto.request.RequestUserDTO;
 import com.example.demo.dto.response.core.CommonResponseDTO;
 import com.example.demo.entity.User;
-import com.example.demo.exception.SQLIntegrityConstraintViolationException;
 import com.example.demo.exception.UnAuthorizedException;
 import com.example.demo.jwt.JwtConfig;
 import com.example.demo.jwt.JwtTokenUtil;
 import com.example.demo.repo.UserRepo;
-import com.example.demo.service.process.UserService;
+import com.example.demo.service.UserService;
 import com.example.demo.util.mapper.UserMapper;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -55,7 +54,7 @@ public class UserServiceImpl implements UserService {
                     true,
                     true,
                     true,
-                    false
+                    true
 
 
             );

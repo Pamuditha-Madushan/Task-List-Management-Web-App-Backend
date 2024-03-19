@@ -1,6 +1,6 @@
 package com.example.demo.jwt;
 
-import com.example.demo.service.impl.UserServiceImpl;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.jsonwebtoken.Jwts;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -26,14 +26,12 @@ public class JwtUsernameAndPasswordAuthenticationFilter extends UsernamePassword
 
     private final JwtConfig jwtConfig;
 
-    private final UserServiceImpl userService;
-
     private final SecretKey secretKey;
 
-    public JwtUsernameAndPasswordAuthenticationFilter(AuthenticationManager authenticationManager, JwtConfig jwtConfig, UserServiceImpl userService, SecretKey secretKey) {
+
+    public JwtUsernameAndPasswordAuthenticationFilter(AuthenticationManager authenticationManager, JwtConfig jwtConfig, SecretKey secretKey) {
         this.authenticationManager = authenticationManager;
         this.jwtConfig = jwtConfig;
-        this.userService = userService;
         this.secretKey = secretKey;
     }
 
@@ -63,9 +61,10 @@ public class JwtUsernameAndPasswordAuthenticationFilter extends UsernamePassword
 
         //  UserDetails userDetails = (UserDetails) authResult.getPrincipal();
 
-        //chain.doFilter(request, response);
+        chain.doFilter(request, response);
 
-       // try {
+        /*
+        try {
             String token = Jwts.builder()
                     .setSubject(authResult.getName())
                     .setIssuedAt(new Date())
@@ -76,7 +75,7 @@ public class JwtUsernameAndPasswordAuthenticationFilter extends UsernamePassword
 
             response.addHeader(jwtConfig.getAuthorizationHeader(),
                     jwtConfig.getTokenPrefix() + token);
-            /*
+
         } catch (JwtException e) {
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             response.getWriter().write("Error generating JWT token: " + e.getMessage());
