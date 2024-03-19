@@ -80,8 +80,10 @@ public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
                 .authorizeRequests()
                 .antMatchers(
                         "/api/v1/user/register/**",
-                        "/api/v1/user/login/**" //,
-                        //"/api/v1/tasks/create"
+                        "/api/v1/user/login/**" ,
+                        "/api/v1/tasks/business/create",
+                        "/api/v1/tasks/business/list",
+                        "/api/v1/tasks/business/find-solo-task/**"
 
                 )
                 .permitAll()

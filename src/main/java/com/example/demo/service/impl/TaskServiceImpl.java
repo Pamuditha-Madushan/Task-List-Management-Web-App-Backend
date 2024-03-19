@@ -6,6 +6,7 @@ import com.example.demo.dto.response.ResponseTaskDTO;
 import com.example.demo.dto.response.core.CommonResponseDTO;
 import com.example.demo.dto.response.paginate.PaginatedResponseTaskDTO;
 import com.example.demo.entity.Task;
+import com.example.demo.exception.EntryNotFoundException;
 import com.example.demo.repo.TaskRepo;
 import com.example.demo.service.TaskService;
 import com.example.demo.util.mapper.TaskMapper;
@@ -80,4 +81,18 @@ public class TaskServiceImpl implements TaskService {
                 responseTaskDTOS
         );
     }
+
+
+    @Override
+    public ResponseTaskDTO findTaskById(Long id) {
+        Optional<Task> soloTask = taskRepo.findById(id);
+        if (soloTask.isPresent()) {
+            return taskMapper.toResponseTaskDTO(soloTask.get());
+        } else {
+            throw new EntryNotFoundException("The task of id : " + id + " does not exist !");
+        }
+    }
+
+
+
 }

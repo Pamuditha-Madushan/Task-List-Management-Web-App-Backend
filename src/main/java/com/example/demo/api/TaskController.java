@@ -32,7 +32,9 @@ public class TaskController {
                 newTaskData.getCode() == 409 ? HttpStatus.CONFLICT : HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
-    @PostMapping(path = {"/business/list"})
+
+
+    @GetMapping(path = {"/business/list"})
     public ResponseEntity<StandardResponse> findAllTasksForVisitors(
             @RequestParam int page, @RequestParam int size
     ) {
@@ -44,5 +46,21 @@ public class TaskController {
                 HttpStatus.OK
         );
     }
+
+
+
+    @GetMapping(path = {"business/find-solo-task/{id}"})
+    public ResponseEntity<StandardResponse> findSoloTask(
+            @PathVariable Long id
+    ) {
+
+        return new ResponseEntity<StandardResponse>(
+                new StandardResponse(200, "Solo task data retrieved successfully",
+                        taskService.findTaskById(id)),
+                HttpStatus.OK
+        );
+    }
+
+
 
 }

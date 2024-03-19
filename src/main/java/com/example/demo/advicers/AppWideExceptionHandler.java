@@ -1,6 +1,7 @@
 package com.example.demo.advicers;
 
 
+import com.example.demo.exception.EntryNotFoundException;
 import com.example.demo.exception.SQLIntegrityConstraintViolationException;
 import com.example.demo.exception.UnAuthorizedException;
 import com.example.demo.util.StandardResponse;
@@ -40,6 +41,13 @@ public class AppWideExceptionHandler {
         return new ResponseEntity<StandardResponse>(
                 new StandardResponse(400, "Validation Error Occurred !", ex.getMessage()),
                 HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(EntryNotFoundException.class)
+    public ResponseEntity<StandardResponse> handleEntryNotFoundException(EntryNotFoundException e) {
+        return new ResponseEntity<StandardResponse>(
+                new StandardResponse(404, e.getMessage(), e),
+                HttpStatus.NOT_FOUND);
     }
 
 }

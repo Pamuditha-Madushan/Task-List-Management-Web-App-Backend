@@ -19,7 +19,7 @@ public interface TaskRepo extends JpaRepository<Task, Long> {
     @Query(value = "SELECT * FROM tasks t WHERE t.title = :title AND t.description = :description AND t.status = :status", nativeQuery = true)
     Optional<Task> findByTitleAndDescriptionAndStatus(@Param("title") String title, @Param("description") String description, @Param("status") String status);
 
-    @Query(value = "SELECT t FROM tasks t", nativeQuery = true)
+    @Query(value = "SELECT * FROM tasks", nativeQuery = true)
     List<Task> findAllTasksWithPagination(Pageable pageable);
 
     @Query(value = "SELECT COUNT(*) FROM tasks", nativeQuery = true)
