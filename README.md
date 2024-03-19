@@ -25,4 +25,5 @@
    2). Task List API
 
       - Implemented create task functionality.
+      - Implemented read all tasks with pagination functionality.
       - Having issues with authorization.
