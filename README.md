@@ -29,6 +29,8 @@
       - Implemented create task functionality.
       - Implemented read all tasks with pagination functionality.
       - Implemented read single task using id functionality.
+      - Implemented update task functionality.
+      - Implemented delete task functionality.
       - Having issues with authorization.
 
       
