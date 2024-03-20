@@ -49,7 +49,40 @@ public class TaskController {
 
 
 
-    @GetMapping(path = {"business/find-solo-task/{id}"})
+    @PutMapping(path = {"/business/modify/{id}"})
+    public ResponseEntity<StandardResponse> modifyTaskData(
+            @RequestBody RequestTaskDTO requestTaskDTO,
+            @PathVariable Long id
+    ) {
+
+        CommonResponseDTO persistResponseData = taskService.modifyTask(requestTaskDTO, id);
+        return new ResponseEntity<>(
+                new StandardResponse(
+                        persistResponseData.getCode(), persistResponseData.getMessage(), persistResponseData.getData()
+                ),
+                HttpStatus.CREATED
+        );
+    }
+
+
+
+    @DeleteMapping(path = {"/business/delete/{id}"})
+    public ResponseEntity<StandardResponse> deleteTask(
+            @PathVariable Long id
+    ) {
+
+        CommonResponseDTO responseData = taskService.deleteTask(id);
+        return new ResponseEntity<>(
+                new StandardResponse(responseData.getCode(), responseData.getMessage(), responseData.getData()
+                ),
+                HttpStatus.CREATED
+                //HttpStatus.NO_CONTENT(204)
+        );
+    }
+
+
+
+    @GetMapping(path = {"/business/find-solo-task/{id}"})
     public ResponseEntity<StandardResponse> findSoloTask(
             @PathVariable Long id
     ) {

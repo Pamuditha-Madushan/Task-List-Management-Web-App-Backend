@@ -83,7 +83,9 @@ public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
                         "/api/v1/user/login/**" ,
                         "/api/v1/tasks/business/create",
                         "/api/v1/tasks/business/list",
-                        "/api/v1/tasks/business/find-solo-task/**"
+                        "/api/v1/tasks/business/find-solo-task/**",
+                        "/api/v1/tasks/business/modify/**",
+                        "/api/v1/tasks/business/delete/**"
 
                 )
                 .permitAll()

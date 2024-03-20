@@ -15,5 +15,9 @@ public interface TaskService {
 
     public PaginatedResponseTaskDTO getTasks(int page, int size);
 
+    CommonResponseDTO modifyTask(RequestTaskDTO requestTaskDTO, Long id);
+
+    CommonResponseDTO deleteTask(Long id);
+
     ResponseTaskDTO findTaskById(Long id);
 }

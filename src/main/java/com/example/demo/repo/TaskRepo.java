@@ -25,4 +25,6 @@ public interface TaskRepo extends JpaRepository<Task, Long> {
     @Query(value = "SELECT COUNT(*) FROM tasks", nativeQuery = true)
     public long countAllTasks();
 
+
+
 }

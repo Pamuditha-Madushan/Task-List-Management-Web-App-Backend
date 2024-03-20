@@ -62,7 +62,7 @@ public class TaskServiceImpl implements TaskService {
 
         //taskDTO.setId(savedTask.getId());
 
-        return new CommonResponseDTO(201, "Task created successfully", savedTask, new ArrayList<>());
+        return new CommonResponseDTO(201, "Task created successfully", savedTask.getId(), new ArrayList<>());
 
     }
 
@@ -81,6 +81,39 @@ public class TaskServiceImpl implements TaskService {
                 responseTaskDTOS
         );
     }
+
+
+    @Override
+    public CommonResponseDTO modifyTask(RequestTaskDTO requestTaskDTO, Long id) {
+        Optional<Task> retainedTaskData = taskRepo.findById(id);
+        if (retainedTaskData.isPresent()) {
+            retainedTaskData.get().setTitle(requestTaskDTO.getTitle());
+            retainedTaskData.get().setDescription(requestTaskDTO.getDescription());
+            retainedTaskData.get().setStatus(requestTaskDTO.getStatus());
+
+            return new CommonResponseDTO(200, "Task updated successfully ...", id, new ArrayList<>());
+        } else {
+            throw new EntryNotFoundException("Task data for id : " + id + " cannot be found !");
+        }
+    }
+
+
+
+
+    @Override
+    public CommonResponseDTO deleteTask(Long id) {
+
+        if (taskRepo.existsById(id)) {
+            taskRepo.deleteById(id);
+
+            return new CommonResponseDTO(200, "Task deleted successfully ...", id, new ArrayList<>());
+        } else {
+            throw new EntryNotFoundException("Cannot find task data of id : " + id);
+        }
+    }
+
+
+
 
 
     @Override
