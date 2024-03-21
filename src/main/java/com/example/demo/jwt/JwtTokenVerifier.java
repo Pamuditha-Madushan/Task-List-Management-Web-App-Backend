@@ -5,6 +5,8 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -24,6 +26,8 @@ public class JwtTokenVerifier extends OncePerRequestFilter {
 
     private final SecretKey secretKey;
 
+    private static final Logger logger = LoggerFactory.getLogger(JwtTokenVerifier.class);
+
     public JwtTokenVerifier(JwtConfig jwtConfig, SecretKey secretKey) {
         this.jwtConfig = jwtConfig;
         this.secretKey = secretKey;
@@ -33,9 +37,12 @@ public class JwtTokenVerifier extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request,
                                     HttpServletResponse response,
                                     FilterChain filterChain) throws ServletException, IOException {
+
+        logger.info("jwt verifier - start", request.getRequestURI());
+
         String authorizationHeader =
                 request.getHeader(jwtConfig.getAuthorizationHeader());
-        String to = authorizationHeader;
+        //String to = authorizationHeader;
         if (Strings.isNullOrEmpty(authorizationHeader)
         || !authorizationHeader.startsWith(jwtConfig.getTokenPrefix())) {
             filterChain.doFilter(request, response);
@@ -43,7 +50,7 @@ public class JwtTokenVerifier extends OncePerRequestFilter {
         }
 
         String token = authorizationHeader.replace(jwtConfig.getTokenPrefix(),
-                "");
+                " ");
 
         try {
             Jws<Claims> claimsJws = Jwts.parser()
@@ -56,6 +63,8 @@ public class JwtTokenVerifier extends OncePerRequestFilter {
                     null
             );
             SecurityContextHolder.getContext().setAuthentication(authentication);
+
+
         } catch (JwtException e) {
             throw new IllegalStateException(String.format("Token %s cannot be trusted !", token));
         }

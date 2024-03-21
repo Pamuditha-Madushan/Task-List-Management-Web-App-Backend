@@ -23,8 +23,9 @@ public class TaskController {
 
     @PostMapping(path = {"/business/create"})
     public ResponseEntity<StandardResponse> createTask(
+            @RequestHeader("Authorization") String token,
             @RequestBody RequestTaskDTO requestTaskDTO) throws IOException {
-        CommonResponseDTO newTaskData = taskService.createTask(requestTaskDTO);
+        CommonResponseDTO newTaskData = taskService.createTask(requestTaskDTO, token);
 
         return new ResponseEntity(new StandardResponse(newTaskData.getCode(),
                 newTaskData.getMessage(), newTaskData.getData()),

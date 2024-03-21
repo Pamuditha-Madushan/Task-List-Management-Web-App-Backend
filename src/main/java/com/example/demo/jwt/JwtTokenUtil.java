@@ -1,11 +1,12 @@
 package com.example.demo.jwt;
 
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
 import org.springframework.stereotype.Service;
 
 import javax.crypto.SecretKey;
 import java.time.LocalDate;
-import java.util.Collections;
 import java.util.Date;
 
 @Service
@@ -20,7 +21,7 @@ public class JwtTokenUtil {
         this.secretKey = secretKey;
     }
 
-    public String generateToken (String username) {
+    public String generateToken(String username) {
 
 
         String token = Jwts.builder()
@@ -33,4 +34,21 @@ public class JwtTokenUtil {
 
         return token;
     }
+
+
+    public boolean validateToken(String token) {
+        try {
+            Jws<Claims> claimsJws = Jwts.parserBuilder()
+                    .setSigningKey(secretKey)
+                    .build()
+                    .parseClaimsJws(token);
+
+            return true;
+        } catch (Exception e) {
+
+            return false;
+        }
+    }
+
+
 }

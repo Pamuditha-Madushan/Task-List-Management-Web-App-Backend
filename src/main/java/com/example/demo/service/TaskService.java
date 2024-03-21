@@ -11,7 +11,7 @@ import java.io.IOException;
 @Service
 public interface TaskService {
 
-    public CommonResponseDTO createTask(RequestTaskDTO requestTaskDTO) throws IOException;
+    public CommonResponseDTO createTask(RequestTaskDTO requestTaskDTO, String token) throws IOException;
 
     public PaginatedResponseTaskDTO getTasks(int page, int size);
 

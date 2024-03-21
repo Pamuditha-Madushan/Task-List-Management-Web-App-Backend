@@ -59,6 +59,8 @@ public class UserServiceImpl implements UserService {
 
             );
 
+
+
             userRepo.save(userMapper.toUser(userDTO));
 
             return new CommonResponseDTO(201,  requestUserDTO.getUsername() + " registered successfully ...", requestUserDTO.getUsername(), new ArrayList<>());
@@ -79,15 +81,16 @@ public class UserServiceImpl implements UserService {
             throw new UnAuthorizedException("Invalid Username or Password !");
         }
 
-        String accessToken = jwtTokenUtil.generateToken(loginUser.getUsername());
+       // String accessToken = jwtTokenUtil.generateToken(loginUser.getUsername());
 
-        response.addHeader(jwtConfig.getAuthorizationHeader(), jwtConfig.getTokenPrefix() + " " + accessToken);
+       // response.addHeader(jwtConfig.getAuthorizationHeader(), jwtConfig.getTokenPrefix() + " " + accessToken);
 
 
 
         return new CommonResponseDTO(200,
                 "User " +loginUserDTO.getUsername()+ " logged in successfully ...",
-                accessToken,
+               null,
+               // accessToken,
                 null);
     }
 }

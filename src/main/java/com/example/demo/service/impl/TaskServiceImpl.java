@@ -7,6 +7,7 @@ import com.example.demo.dto.response.core.CommonResponseDTO;
 import com.example.demo.dto.response.paginate.PaginatedResponseTaskDTO;
 import com.example.demo.entity.Task;
 import com.example.demo.exception.EntryNotFoundException;
+import com.example.demo.jwt.JwtTokenUtil;
 import com.example.demo.repo.TaskRepo;
 import com.example.demo.service.TaskService;
 import com.example.demo.util.mapper.TaskMapper;
@@ -29,14 +30,21 @@ public class TaskServiceImpl implements TaskService {
     private final TaskMapper taskMapper;
 
 
-    public TaskServiceImpl(TaskRepo taskRepo, TaskMapper taskMapper) {
+    private final JwtTokenUtil jwtTokenUtil;
+
+
+    public TaskServiceImpl(TaskRepo taskRepo, TaskMapper taskMapper, JwtTokenUtil jwtTokenUtil) {
         this.taskRepo = taskRepo;
         this.taskMapper = taskMapper;
+        this.jwtTokenUtil = jwtTokenUtil;
     }
 
     @Override
-    public CommonResponseDTO createTask(RequestTaskDTO requestTaskDTO) throws IOException {
+    public CommonResponseDTO createTask(RequestTaskDTO requestTaskDTO, String token) throws IOException {
 
+        if (!jwtTokenUtil.validateToken(token)) {
+            return new CommonResponseDTO(403, "Invalid token" , "NO DATA", new ArrayList<>());
+        }
 
         String title = requestTaskDTO.getTitle();
         String description = requestTaskDTO.getDescription();

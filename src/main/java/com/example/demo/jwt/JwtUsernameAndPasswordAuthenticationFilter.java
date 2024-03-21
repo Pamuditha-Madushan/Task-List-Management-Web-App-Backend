@@ -3,12 +3,14 @@ package com.example.demo.jwt;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.jsonwebtoken.Jwts;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.stereotype.Component;
 
 import javax.crypto.SecretKey;
 import javax.servlet.FilterChain;
@@ -20,6 +22,7 @@ import java.time.LocalDate;
 import java.util.Date;
 
 
+
 public class JwtUsernameAndPasswordAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 
     private final AuthenticationManager authenticationManager;
@@ -28,6 +31,8 @@ public class JwtUsernameAndPasswordAuthenticationFilter extends UsernamePassword
 
     private final SecretKey secretKey;
 
+
+    private static final Logger logger = LoggerFactory.getLogger(JwtUsernameAndPasswordAuthenticationFilter.class);
 
     public JwtUsernameAndPasswordAuthenticationFilter(AuthenticationManager authenticationManager, JwtConfig jwtConfig, SecretKey secretKey) {
         this.authenticationManager = authenticationManager;
@@ -38,6 +43,8 @@ public class JwtUsernameAndPasswordAuthenticationFilter extends UsernamePassword
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request,
                                                 HttpServletResponse response) throws AuthenticationException {
+        logger.info("attempt authentication - start");
+
         try {
             UsernameAndPasswordAuthenticationRequest authenticationRequest =
                     new ObjectMapper().readValue(request.getInputStream(),
@@ -48,9 +55,15 @@ public class JwtUsernameAndPasswordAuthenticationFilter extends UsernamePassword
             );
 
             Authentication authenticate = authenticationManager.authenticate(authentication);
+            logger.info("attempt authentication - end" + authenticate);
+            System.out.println("attempt authentication - comment");
             return authenticate;
         } catch (IOException e) {
+            logger.error("Error while attempting authentication: " + e.getMessage());
             throw new RuntimeException(e);
+        } catch (AuthenticationException ex) {
+            logger.error("Authentication failed: " + ex.getMessage());
+            throw ex;
         }
     }
 
@@ -59,12 +72,13 @@ public class JwtUsernameAndPasswordAuthenticationFilter extends UsernamePassword
                                             HttpServletResponse response, FilterChain chain,
                                             Authentication authResult) throws IOException, ServletException {
 
-        //  UserDetails userDetails = (UserDetails) authResult.getPrincipal();
 
-        chain.doFilter(request, response);
+        logger.info("==>> SUCCESSFUL Authentication!  " + authResult.toString());
+       // chain.doFilter(request, response);
 
-        /*
         try {
+
+
             String token = Jwts.builder()
                     .setSubject(authResult.getName())
                     .setIssuedAt(new Date())
@@ -73,9 +87,29 @@ public class JwtUsernameAndPasswordAuthenticationFilter extends UsernamePassword
                     .signWith(secretKey)
                     .compact();
 
+         /*
+            String username = (String) authResult.getPrincipal();
+            String token = jwtTokenUtil.generateToken(username);
+
+
+          */
+
             response.addHeader(jwtConfig.getAuthorizationHeader(),
                     jwtConfig.getTokenPrefix() + token);
 
+
+
+            logger.info("Token generated and response setup successful.");
+            System.out.println(token);
+            System.out.println("Token generated and response setup successful. - comment");
+
+        } catch (Exception e) {
+            logger.error("Error during successful authentication: " + e.getMessage());
+            throw new ServletException(e);
+        }
+
+
+            /*
         } catch (JwtException e) {
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             response.getWriter().write("Error generating JWT token: " + e.getMessage());
@@ -85,11 +119,14 @@ public class JwtUsernameAndPasswordAuthenticationFilter extends UsernamePassword
 
 
 
-        /*
+/*
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
         response.getWriter().write("{ \"token\": \"" + jwtConfig.getTokenPrefix() + token + "\" }");
 
-         */
+
+        logger.info("successful Authentication - end");
+
+ */
     }
 }
