@@ -38,7 +38,7 @@ public class JwtTokenVerifier extends OncePerRequestFilter {
                                     HttpServletResponse response,
                                     FilterChain filterChain) throws ServletException, IOException {
 
-        logger.info("jwt verifier - start", request.getRequestURI());
+        logger.info("jwt verifier - start", request.getHeader("Authorization"));
 
         String authorizationHeader =
                 request.getHeader(jwtConfig.getAuthorizationHeader());
@@ -50,7 +50,7 @@ public class JwtTokenVerifier extends OncePerRequestFilter {
         }
 
         String token = authorizationHeader.replace(jwtConfig.getTokenPrefix(),
-                " ");
+                "");
 
         try {
             Jws<Claims> claimsJws = Jwts.parser()
@@ -64,11 +64,13 @@ public class JwtTokenVerifier extends OncePerRequestFilter {
             );
             SecurityContextHolder.getContext().setAuthentication(authentication);
 
+            logger.info("jwt verifier - mid");
 
         } catch (JwtException e) {
             throw new IllegalStateException(String.format("Token %s cannot be trusted !", token));
         }
 
         filterChain.doFilter(request, response);
+        logger.info("jwt verifier - end");
     }
 }

@@ -14,18 +14,19 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.core.GrantedAuthorityDefaults;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 
 import javax.crypto.SecretKey;
+import java.io.IOException;
 import java.util.List;
 
 @Configuration
@@ -57,7 +58,7 @@ public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
         this.secretKey = secretKey;
     }
 
-    private static final Logger logger = LoggerFactory.getLogger(ApplicationSecurityConfig.class);
+        private static final Logger logger = LoggerFactory.getLogger(ApplicationSecurityConfig.class);
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
@@ -80,12 +81,10 @@ public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
                 .sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
-                .addFilterBefore
+                .addFilter
                         (new JwtUsernameAndPasswordAuthenticationFilter
-                                        (authenticationManager(), jwtConfig, secretKey),
-                                UsernamePasswordAuthenticationFilter.class
-                        )
-                .addFilterBefore(new JwtTokenVerifier(jwtConfig, secretKey),
+                                        (authenticationManager(), jwtConfig, secretKey))
+                .addFilterAfter(new JwtTokenVerifier(jwtConfig, secretKey),
                         JwtUsernameAndPasswordAuthenticationFilter.class)
                 .authorizeRequests()
                 .antMatchers(
@@ -111,18 +110,11 @@ public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         logger.error("attempt security authentication - start");
-        auth.userDetailsService(applicationUserService).passwordEncoder(passwordEncoder);
+        auth.authenticationProvider(daoAuthenticationProvider());
         logger.error("attempt security authentication - end");
     }
 
     @Bean
-    @Override
-    public AuthenticationManager authenticationManagerBean() throws Exception {
-        return super.authenticationManagerBean();
-    }
-
-
-   /* @Bean
     public DaoAuthenticationProvider daoAuthenticationProvider() {
         logger.error("attempt security provider - start");
         DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
@@ -132,7 +124,6 @@ public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
         return provider;
     }
 
-    */
 
     @Bean
     public GrantedAuthorityDefaults grantedAuthorityDefaults() {

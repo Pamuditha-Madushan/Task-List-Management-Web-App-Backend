@@ -55,14 +55,14 @@ public class JwtUsernameAndPasswordAuthenticationFilter extends UsernamePassword
             );
 
             Authentication authenticate = authenticationManager.authenticate(authentication);
-            logger.info("attempt authentication - end" + authenticate);
+            logger.debug("attempt authentication - end" + authenticate);
             System.out.println("attempt authentication - comment");
             return authenticate;
         } catch (IOException e) {
-            logger.error("Error while attempting authentication: " + e.getMessage());
+            logger.trace("Error while attempting authentication: " + e.getMessage());
             throw new RuntimeException(e);
         } catch (AuthenticationException ex) {
-            logger.error("Authentication failed: " + ex.getMessage());
+            logger.debug("Authentication failed: " + ex.getMessage());
             throw ex;
         }
     }
@@ -77,8 +77,6 @@ public class JwtUsernameAndPasswordAuthenticationFilter extends UsernamePassword
        // chain.doFilter(request, response);
 
         try {
-
-
             String token = Jwts.builder()
                     .setSubject(authResult.getName())
                     .setIssuedAt(new Date())
@@ -95,7 +93,7 @@ public class JwtUsernameAndPasswordAuthenticationFilter extends UsernamePassword
           */
 
             response.addHeader(jwtConfig.getAuthorizationHeader(),
-                    jwtConfig.getTokenPrefix() + token);
+                    jwtConfig.getTokenPrefix() + " " + token);
 
 
 

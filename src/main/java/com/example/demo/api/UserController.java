@@ -50,8 +50,6 @@ public class UserController {
                     loggedInStateData.getCode() == 200 ? HttpStatus.OK : HttpStatus.INTERNAL_SERVER_ERROR);
         } catch (UnAuthorizedException e) {
             throw e;
-        } catch (UsernameNotFoundException ex) {
-            throw ex;
         }
     }
 }

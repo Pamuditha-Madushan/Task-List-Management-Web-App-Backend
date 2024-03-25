@@ -12,6 +12,10 @@ import com.example.demo.jwt.JwtTokenUtil;
 import com.example.demo.repo.UserRepo;
 import com.example.demo.service.UserService;
 import com.example.demo.util.mapper.UserMapper;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -30,6 +34,7 @@ public class UserServiceImpl implements UserService {
     private final PasswordEncoder passwordEncoder;
     private final ApplicationUserServiceImpl applicationUserService;
 
+   // private final AuthenticationManager authenticationManager;
     private final UserMapper userMapper;
     private final JwtConfig jwtConfig;
    private final JwtTokenUtil jwtTokenUtil;
@@ -74,23 +79,41 @@ public class UserServiceImpl implements UserService {
     @Override
     public CommonResponseDTO loginUser(LoginUserDTO loginUserDTO, HttpServletResponse response) throws IOException {
         User loginUser = userRepo.findByUsername(loginUserDTO.getUsername());
-        if (loginUser == null) {
-            throw new UsernameNotFoundException("Username " +loginUserDTO.getUsername() + " not found !");
-        }
-        if (!passwordEncoder.matches(loginUserDTO.getPassword(), loginUser.getPassword())) {
+        if (loginUser == null || !passwordEncoder.matches(loginUserDTO.getPassword(), loginUser.getPassword())) {
             throw new UnAuthorizedException("Invalid Username or Password !");
         }
+
+        /*
+        Authentication authentication = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(loginUserDTO.getUsername(), loginUserDTO.getPassword())
+        );
+
+        if (authentication != null) {
+            return new CommonResponseDTO(200,
+                    "User " +loginUserDTO.getUsername()+ " logged in successfully ...",
+                    null,
+                    // accessToken,
+                    null);
+        }
+
+        else {
+            throw new BadCredentialsException("Authentication failed");
+        }
+
+         */
+
 
        // String accessToken = jwtTokenUtil.generateToken(loginUser.getUsername());
 
        // response.addHeader(jwtConfig.getAuthorizationHeader(), jwtConfig.getTokenPrefix() + " " + accessToken);
 
-
-
         return new CommonResponseDTO(200,
                 "User " +loginUserDTO.getUsername()+ " logged in successfully ...",
-               null,
-               // accessToken,
+                null,
+                // accessToken,
                 null);
+
+
+
     }
 }
