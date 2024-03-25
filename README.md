@@ -1,4 +1,4 @@
-#Simple-Spring-APO-Development
+#Simple-Spring-API-Development
 
 
 1). User Authentication API
@@ -33,6 +33,7 @@
       - Implemented delete task functionality.
 
       - Fixing some issues with authentication.
+      - Added some code changes while fixing the issue.
       - Having issues with authorization.
 
       
