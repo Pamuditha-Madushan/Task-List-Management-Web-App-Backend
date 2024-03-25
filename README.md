@@ -31,6 +31,8 @@
       - Implemented read single task using id functionality.
       - Implemented update task functionality.
       - Implemented delete task functionality.
+
+      - Fixing some issues with authentication.
       - Having issues with authorization.
 
       
