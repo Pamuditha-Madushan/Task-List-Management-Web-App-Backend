@@ -1,10 +1,16 @@
 package com.example.demo.jwt;
 
 
+import com.example.demo.auth.ApplicationUser;
+import com.example.demo.dto.request.LoginUserDTO;
+import com.example.demo.dto.response.core.CommonResponseDTO;
+import com.example.demo.exception.UnAuthorizedException;
+import com.example.demo.service.impl.UserServiceImpl;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.jsonwebtoken.Jwts;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -19,6 +25,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Date;
 
 
@@ -38,6 +45,12 @@ public class JwtUsernameAndPasswordAuthenticationFilter extends UsernamePassword
         this.authenticationManager = authenticationManager;
         this.jwtConfig = jwtConfig;
         this.secretKey = secretKey;
+
+        setFilterProcessesUrl("/api/v1/user/authenticate");
+
+        logger.info("jwtUsernameAndPasswordAuthenticationFilter constructor - start", authenticationManager);
+        logger.debug("",jwtConfig);
+        logger.info("", secretKey);
     }
 
     @Override
@@ -49,14 +62,17 @@ public class JwtUsernameAndPasswordAuthenticationFilter extends UsernamePassword
             UsernameAndPasswordAuthenticationRequest authenticationRequest =
                     new ObjectMapper().readValue(request.getInputStream(),
                             UsernameAndPasswordAuthenticationRequest.class);
+
+            logger.info("Deserialized authentication request: {}", authenticationRequest);
             Authentication authentication = new UsernamePasswordAuthenticationToken(
                     authenticationRequest.getUsername(),
-                    authenticationRequest.getPassword()
+                    authenticationRequest.getPassword(),
+                    new ArrayList<>()
             );
 
             Authentication authenticate = authenticationManager.authenticate(authentication);
+
             logger.debug("attempt authentication - end" + authenticate);
-            System.out.println("attempt authentication - comment");
             return authenticate;
         } catch (IOException e) {
             logger.trace("Error while attempting authentication: " + e.getMessage());
@@ -96,10 +112,13 @@ public class JwtUsernameAndPasswordAuthenticationFilter extends UsernamePassword
                     jwtConfig.getTokenPrefix() + " " + token);
 
 
+            response.setContentType("application/json");
+            response.setCharacterEncoding("UTF-8");
+            response.getWriter().write("{ \"token\": \"" + jwtConfig.getTokenPrefix() + token + "\" }");
+
 
             logger.info("Token generated and response setup successful.");
-            System.out.println(token);
-            System.out.println("Token generated and response setup successful. - comment");
+
 
         } catch (Exception e) {
             logger.error("Error during successful authentication: " + e.getMessage());
@@ -115,14 +134,7 @@ public class JwtUsernameAndPasswordAuthenticationFilter extends UsernamePassword
 
          */
 
-
-
 /*
-        response.setContentType("application/json");
-        response.setCharacterEncoding("UTF-8");
-        response.getWriter().write("{ \"token\": \"" + jwtConfig.getTokenPrefix() + token + "\" }");
-
-
         logger.info("successful Authentication - end");
 
  */

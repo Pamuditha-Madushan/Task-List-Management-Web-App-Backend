@@ -1,11 +1,11 @@
 package com.example.demo.security;
 
 import com.example.demo.jwt.JwtConfig;
-import com.example.demo.jwt.JwtTokenUtil;
 import com.example.demo.jwt.JwtTokenVerifier;
 import com.example.demo.jwt.JwtUsernameAndPasswordAuthenticationFilter;
 import com.example.demo.service.impl.ApplicationUserServiceImpl;
 import com.example.demo.service.UserService;
+import com.example.demo.service.impl.UserServiceImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,7 +14,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
-import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -26,7 +25,6 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.web.cors.CorsConfiguration;
 
 import javax.crypto.SecretKey;
-import java.io.IOException;
 import java.util.List;
 
 @Configuration
@@ -37,7 +35,7 @@ public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
     private final PasswordEncoder passwordEncoder;
 
     private final ApplicationUserServiceImpl applicationUserService;
-    private final UserService userService;
+    private final UserServiceImpl userService;
 
     private final JwtConfig jwtConfig;
 
@@ -48,7 +46,7 @@ public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
     public ApplicationSecurityConfig(
             PasswordEncoder passwordEncoder,
             ApplicationUserServiceImpl applicationUserService,
-            UserService userService,
+            UserServiceImpl userService,
             JwtConfig jwtConfig,
             SecretKey secretKey) {
         this.passwordEncoder = passwordEncoder;
@@ -81,15 +79,16 @@ public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
                 .sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
-                .addFilter
+                .addFilterBefore
                         (new JwtUsernameAndPasswordAuthenticationFilter
-                                        (authenticationManager(), jwtConfig, secretKey))
+                                        (authenticationManager(), jwtConfig, secretKey),
+                                UsernamePasswordAuthenticationFilter.class)
                 .addFilterAfter(new JwtTokenVerifier(jwtConfig, secretKey),
                         JwtUsernameAndPasswordAuthenticationFilter.class)
                 .authorizeRequests()
                 .antMatchers(
                         "/api/v1/user/register/**",
-                        "/api/v1/user/login/**" /*,
+                        "/api/v1/user/authenticate/**" /*,
                         "/api/v1/tasks/business/create",
                         "/api/v1/tasks/business/list",
                         "/api/v1/tasks/business/find-solo-task/**",
@@ -111,8 +110,10 @@ public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         logger.error("attempt security authentication - start");
         auth.authenticationProvider(daoAuthenticationProvider());
+        auth.userDetailsService(applicationUserService).passwordEncoder(passwordEncoder);
         logger.error("attempt security authentication - end");
     }
+
 
     @Bean
     public DaoAuthenticationProvider daoAuthenticationProvider() {

@@ -1,16 +1,21 @@
 package com.example.demo.jwt;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class UsernameAndPasswordAuthenticationRequest {
 
     private String username;
 
     private String password;
 
-    public UsernameAndPasswordAuthenticationRequest() {
+    private static final Logger logger = LoggerFactory.getLogger(UsernameAndPasswordAuthenticationRequest.class);
 
+    public UsernameAndPasswordAuthenticationRequest() {
     }
 
     public String getUsername() {
+        logger.info("UAPAR - start", username);
         return username;
     }
 
@@ -19,6 +24,7 @@ public class UsernameAndPasswordAuthenticationRequest {
     }
 
     public String getPassword() {
+        logger.info("UAPAR -end", password);
         return password;
     }
 

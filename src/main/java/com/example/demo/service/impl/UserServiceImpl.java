@@ -10,8 +10,11 @@ import com.example.demo.exception.UnAuthorizedException;
 import com.example.demo.jwt.JwtConfig;
 import com.example.demo.jwt.JwtTokenUtil;
 import com.example.demo.repo.UserRepo;
+import com.example.demo.security.ApplicationSecurityConfig;
 import com.example.demo.service.UserService;
 import com.example.demo.util.mapper.UserMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -38,6 +41,8 @@ public class UserServiceImpl implements UserService {
     private final UserMapper userMapper;
     private final JwtConfig jwtConfig;
    private final JwtTokenUtil jwtTokenUtil;
+
+    private static final Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
 
     public UserServiceImpl(UserRepo userRepo, PasswordEncoder passwordEncoder, ApplicationUserServiceImpl applicationUserService, UserMapper userMapper, JwtConfig jwtConfig, JwtTokenUtil jwtTokenUtil) {
         this.userRepo = userRepo;
@@ -78,6 +83,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public CommonResponseDTO loginUser(LoginUserDTO loginUserDTO, HttpServletResponse response) throws IOException {
+        logger.debug("service impl login user - start");
         User loginUser = userRepo.findByUsername(loginUserDTO.getUsername());
         if (loginUser == null || !passwordEncoder.matches(loginUserDTO.getPassword(), loginUser.getPassword())) {
             throw new UnAuthorizedException("Invalid Username or Password !");
@@ -107,12 +113,13 @@ public class UserServiceImpl implements UserService {
 
        // response.addHeader(jwtConfig.getAuthorizationHeader(), jwtConfig.getTokenPrefix() + " " + accessToken);
 
+        logger.debug("service impl login user - end");
+
         return new CommonResponseDTO(200,
                 "User " +loginUserDTO.getUsername()+ " logged in successfully ...",
-                null,
+                response.getHeader("Authorization"),
                 // accessToken,
                 null);
-
 
 
     }

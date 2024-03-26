@@ -40,7 +40,7 @@ public class UserController {
                             registeredStateData.getCode() == 409 ? HttpStatus.CONFLICT : HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
-    @PostMapping(path = {"/login"})
+    @PostMapping(path = {"/authenticate"})
     public ResponseEntity<StandardResponse> loginUser(
             @Valid @RequestBody LoginUserDTO loginUserDTO, HttpServletResponse response) throws IOException {
         try {
