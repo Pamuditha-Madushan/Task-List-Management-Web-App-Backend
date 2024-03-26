@@ -15,11 +15,9 @@
    b). Login API with JWT Auth
    
      - Start Implementing User Login Functionality with JWT.
-     - Implemented Jwt related code for Jwt authentication.
-     - Complete implementing Jwt authentication and spring security functionalities.
-     - Login Functionality Implementation Done Successfully.
-     - Modified the code to return jwt token when user authentication is successful.
-     - Added response header also to return jwt token.
+     - Implemented Jwt related code for Jwt authentication with spring security with mvc modularization approach.
+     - Jwt token will be return as response header.
+     - Completed Implementing User Login Functionality with JWT.
      
 
 
@@ -32,7 +30,7 @@
       - Implemented update task functionality.
       - Implemented delete task functionality.
 
-      - Fixing some issues with authentication.
+
       - Added some code changes while fixing the issue.
       - Having issues with authorization.
 
